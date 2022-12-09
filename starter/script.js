@@ -24,9 +24,14 @@ let gameState = true;
 //test end
 
 //events
-if (gameState) {
+addListener();
+function addListener() {
   roll.addEventListener('click', rollDice);
   hold.addEventListener('click', addScore);
+}
+function removeListener() {
+  roll.removeEventListener('click', rollDice);
+  hold.removeEventListener('click', addScore);
 }
 reset.addEventListener('click', resetGame);
 
@@ -56,17 +61,23 @@ function addScore() {
   document.querySelector(`#score--${indicator}`).textContent = score[indicator];
   random = 0;
   document.querySelector(`#current--${indicator}`).textContent = random;
-  //if (score[indicator] >= 50) {
-  //gameState = !gameState;
-  //   highlightWinner();
-  //}
+  if (score[indicator] >= 20) {
+    highlightWinner(indicator);
+    gameState = !gameState;
+    removeListener();
+    console.log(gameState);
+  }
   indicator ? (indicator = 0) : (indicator = 1);
 }
 
 //Reset
 function resetGame() {
+  currentUser();
+  if (!gameState) {
+    highlightWinner(indicator ? 0 : 1);
+  }
   gameState = !gameState;
-  // highlightWinner();
+  addListener();
   displayUser0.classList.add('player--active');
   displayUser1.classList.remove('player--active');
   random = 0;
@@ -84,9 +95,6 @@ function currentUser() {
   displayUser0.classList.toggle('player--active');
   displayUser1.classList.toggle('player--active');
 }
-
-function highlightWinner() {
-  document
-    .querySelector(`.player--${indicator}`)
-    .classList.toggle('player--winner');
+function highlightWinner(x) {
+  document.querySelector(`.player--${x}`).classList.toggle('player--winner');
 }
